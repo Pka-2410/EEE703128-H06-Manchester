@@ -14,7 +14,49 @@ module tt_um_h06_manchester (
     reg busy_reg;         // Trang thai dang truyen
     reg convention_reg;   // Quy uoc
 
-    assign uo_out  = 8'b00000000;
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            shift_reg      <= 8'b00000000;
+            bit_count      <= 3'b000;
+            half_phase     <= 1'b0;
+            busy_reg       <= 1'b0;
+            convention_reg <= 1'b0;
+        end
+        else if (!busy_reg && uio_in[0]) begin
+            shift_reg      <= ui_in;
+            bit_count      <= 3'b000;
+            half_phase     <= 1'b0;
+            busy_reg       <= 1'b1;
+            convention_reg <= uio_in[1];
+        end
+        else if (busy_reg) begin
+            if (half_phase == 1'b0) begin
+                half_phase <= 1'b1;
+                end
+                else begin
+                    half_phase <= 1'b0;
+
+                    if (bit_count ==  3'd7) begin
+                        busy_reg <= 1'b0;
+                        end
+                        else begin
+                            bit_count <= bit_count + 1'b1;
+                            shift_reg <= {shift_reg[6:0], 1'b0};
+                            end
+                        end
+                    end
+    end
+
+    
+    wire manchester_bit;
+
+    assign manchester_bit =
+        busy_reg
+        ? (shift_reg[7] ^ convention_reg ^ half_phase)
+        : 1'b0;
+
+    assign uo_out = {6'b000000, busy_reg, manchester_bit};
+
     assign uio_out = 8'b00000000;
     assign uio_oe  = 8'b00000000;
 

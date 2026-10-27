@@ -1,0 +1,15 @@
+VCD info: dumpfile h06.vcd opened for output.
+PASS: data=00 conv=0
+PASS: data=00 conv=1
+PASS: data=ff conv=0
+PASS: data=ff conv=1
+PASS: data=a5 conv=0
+PASS: data=a5 conv=1
+PASS: data=80 conv=0
+PASS: data=3c conv=1
+PASS: 8 byte/convention tests
+PASS: start while busy ignored
+PASS: reset during transmission
+PASS: data=a5 conv=0
+PASS: all tests completed
+tb/tb_h06.v:207: $finish called at 1796000 (1ps)
